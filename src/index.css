@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  /* SwipeLife Brand Colors - Headspace warmth meets Cash App boldness */
+  --color-brand-50: #FFF7ED;
+  --color-brand-100: #FFEDD5;
+  --color-brand-200: #FED7AA;
+  --color-brand-300: #FDBA74;
+  --color-brand-400: #FB923C;
+  --color-brand-500: #F97316;
+  --color-brand-600: #EA580C;
+  --color-brand-700: #C2410C;
+  --color-brand-800: #9A3412;
+  --color-brand-900: #7C2D12;
+
+  --color-warm-50: #FFFBEB;
+  --color-warm-100: #FEF3C7;
+  --color-warm-200: #FDE68A;
+  --color-warm-300: #FCD34D;
+  --color-warm-400: #FBBF24;
+  --color-warm-500: #F59E0B;
+
+  --color-coral: #FF6B6B;
+  --color-coral-dark: #E55A5A;
+  --color-sage: #A8D5BA;
+  --color-sage-dark: #7FC29A;
+  --color-lavender: #C4B5FD;
+  --color-lavender-dark: #A78BFA;
+  --color-sky: #7DD3FC;
+  --color-sky-dark: #38BDF8;
+  --color-blush: #FCA5A5;
+  --color-cream: #FFF8F0;
+  --color-charcoal: #1C1917;
+  --color-charcoal-light: #292524;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --radius-card: 1.25rem;
+  --radius-pill: 9999px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-brand-300); border-radius: 9999px; }
+
+/* Card swipe overlay labels */
+.swipe-label {
+  position: absolute;
+  top: 2rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 10;
+}
