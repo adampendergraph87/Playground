@@ -13,9 +13,9 @@ export function AppProvider({ children }) {
     setCardsSwipedToday((prev) => {
       const next = prev + 1;
       // Duolingo-style micro-celebrations at milestones
-      if (next === 5) setShowCelebration('🔥 5 swipes! You\'re warming up!');
-      if (next === 10) setShowCelebration('⚡ 10 swipes! On fire!');
-      if (next === 20) setShowCelebration('🏆 20 swipes! Legend status!');
+      if (next === 5) setShowCelebration('5 swipes! You\'re warming up!');
+      if (next === 10) setShowCelebration('10 swipes! On fire!');
+      if (next === 20) setShowCelebration('20 swipes! Legend status!');
       return next;
     });
   }, []);

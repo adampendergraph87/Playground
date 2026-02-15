@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import { useApp } from '../context/AppContext';
 
-const confettiColors = ['#FB923C', '#FF6B6B', '#A8D5BA', '#C4B5FD', '#7DD3FC', '#FCD34D'];
+const confettiColors = ['#007AFF', '#34C759', '#FF9500', '#5856D6', '#FF3B30', '#FFCC00'];
 
 function Confetti() {
   const pieces = Array.from({ length: 20 }).map((_, i) => ({
@@ -16,23 +19,24 @@ function Confetti() {
   }));
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <Box sx={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
       {pieces.map((p) => (
         <motion.div
           key={p.id}
           initial={{ y: -20, x: `${p.x}vw`, rotate: 0, opacity: 1 }}
           animate={{ y: '100vh', rotate: p.rotation + 360, opacity: 0 }}
           transition={{ duration: p.duration, delay: p.delay, ease: 'easeIn' }}
-          className="absolute rounded-sm"
           style={{
+            position: 'absolute',
             width: p.size,
             height: p.size,
             backgroundColor: p.color,
+            borderRadius: 2,
             left: `${p.x}%`,
           }}
         />
       ))}
-    </div>
+    </Box>
   );
 }
 
@@ -53,8 +57,17 @@ export default function CelebrationOverlay() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
           onClick={dismissCelebration}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(0,0,0,0.2)',
+            backdropFilter: 'blur(4px)',
+          }}
         >
           <Confetti />
           <motion.div
@@ -62,17 +75,28 @@ export default function CelebrationOverlay() {
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.8, y: -20, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-            className="bg-white rounded-3xl px-8 py-6 shadow-2xl text-center mx-6 relative z-10"
           >
-            <motion.p
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring' }}
-              className="text-3xl mb-2"
+            <Paper
+              elevation={4}
+              sx={{
+                borderRadius: 5,
+                px: 4,
+                py: 3,
+                textAlign: 'center',
+                mx: 3,
+                position: 'relative',
+                zIndex: 10,
+              }}
             >
-              🎉
-            </motion.p>
-            <p className="text-lg font-bold text-charcoal">{showCelebration}</p>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: 'spring' }}
+              >
+                <Typography sx={{ fontSize: '2rem', mb: 1 }}>🎉</Typography>
+              </motion.div>
+              <Typography variant="h5">{showCelebration}</Typography>
+            </Paper>
           </motion.div>
         </motion.div>
       )}

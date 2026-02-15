@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Flame, Send, ThumbsUp, ChevronDown, ChevronUp } from 'lucide-react';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Chip from '@mui/material/Chip';
+import WhatshotRounded from '@mui/icons-material/WhatshotRounded';
+import SendRounded from '@mui/icons-material/SendRounded';
+import ThumbUpAltRounded from '@mui/icons-material/ThumbUpAltRounded';
+import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
+import ExpandLessRounded from '@mui/icons-material/ExpandLessRounded';
 import { hotTakePrompts } from '../data/stories';
 
 function HotTakeCard({ take, index }) {
@@ -14,106 +26,132 @@ function HotTakeCard({ take, index }) {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.15 }}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-charcoal/5"
     >
-      {/* Prompt header */}
-      <div className="bg-gradient-to-r from-charcoal to-charcoal-light p-5">
-        <div className="flex items-center gap-2 mb-2">
-          <Flame size={14} className="text-brand-400" />
-          <span className="text-xs font-semibold text-brand-400 uppercase tracking-wider">Hot Take</span>
-        </div>
-        <p className="text-white text-lg font-bold leading-snug">{take.prompt}</p>
-      </div>
+      <Card sx={{ overflow: 'hidden' }}>
+        {/* Prompt header */}
+        <Box sx={{ bgcolor: 'grey.900', p: 2.5 }}>
+          <Chip
+            icon={<WhatshotRounded sx={{ fontSize: 14 }} />}
+            label="Hot Take"
+            size="small"
+            sx={{
+              bgcolor: 'rgba(255,255,255,0.1)',
+              color: 'primary.light',
+              mb: 1.5,
+              '& .MuiChip-icon': { color: 'primary.light' },
+            }}
+          />
+          <Typography variant="h4" sx={{ color: 'white', lineHeight: 1.4 }}>
+            {take.prompt}
+          </Typography>
+        </Box>
 
-      {/* Responses */}
-      <div className="p-4">
-        <AnimatePresence>
-          {take.responses.slice(0, expanded ? take.responses.length : 2).map((r, i) => (
+        {/* Responses */}
+        <Box sx={{ p: 2 }}>
+          <AnimatePresence>
+            {take.responses.slice(0, expanded ? take.responses.length : 2).map((r, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 1.5,
+                    py: 1.5,
+                    borderBottom: '1px solid',
+                    borderColor: 'divider',
+                    '&:last-child': { borderBottom: 'none' },
+                  }}
+                >
+                  <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.light', color: 'primary.dark', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+                    A
+                  </Avatar>
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body2" sx={{ lineHeight: 1.5 }}>{r.text}</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => setLiked((prev) => ({ ...prev, [i]: !prev[i] }))}
+                        sx={{ color: liked[i] ? 'primary.main' : 'text.disabled', p: 0.5 }}
+                      >
+                        <ThumbUpAltRounded sx={{ fontSize: 14 }} />
+                      </IconButton>
+                      <Typography variant="caption">
+                        {liked[i] ? r.likes + 1 : r.likes}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {take.responses.length > 2 && (
+            <Button
+              size="small"
+              onClick={() => setExpanded(!expanded)}
+              endIcon={expanded ? <ExpandLessRounded /> : <ExpandMoreRounded />}
+              sx={{ mt: 0.5, color: 'primary.main' }}
+            >
+              {expanded ? 'Show less' : `${take.responses.length - 2} more responses`}
+            </Button>
+          )}
+
+          {/* Add response */}
+          {showInput ? (
             <motion.div
-              key={i}
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="flex items-start gap-3 py-3 border-b border-charcoal/5 last:border-0"
             >
-              <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-xs font-bold text-brand-600 shrink-0">
-                A
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-charcoal leading-relaxed">{r.text}</p>
-                <div className="flex items-center gap-3 mt-2">
-                  <button
-                    onClick={() => setLiked((prev) => ({ ...prev, [i]: !prev[i] }))}
-                    className={`flex items-center gap-1 text-xs transition-colors ${
-                      liked[i] ? 'text-brand-500' : 'text-charcoal/35 hover:text-charcoal/60'
-                    }`}
-                  >
-                    <ThumbsUp size={12} />
-                    <span>{liked[i] ? r.likes + 1 : r.likes}</span>
-                  </button>
-                </div>
-              </div>
+              <Box sx={{ display: 'flex', gap: 1, mt: 1.5, pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  value={userResponse}
+                  onChange={(e) => setUserResponse(e.target.value)}
+                  placeholder="Drop your take..."
+                  autoFocus
+                />
+                <IconButton color="primary" sx={{ bgcolor: 'primary.main', color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}>
+                  <SendRounded fontSize="small" />
+                </IconButton>
+              </Box>
             </motion.div>
-          ))}
-        </AnimatePresence>
-
-        {take.responses.length > 2 && (
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1 text-xs text-brand-500 font-medium mt-2 hover:text-brand-600 transition-colors"
-          >
-            {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-            {expanded ? 'Show less' : `${take.responses.length - 2} more responses`}
-          </button>
-        )}
-
-        {/* Add response */}
-        {showInput ? (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="flex gap-2 mt-3 pt-3 border-t border-charcoal/5"
-          >
-            <input
-              type="text"
-              value={userResponse}
-              onChange={(e) => setUserResponse(e.target.value)}
-              placeholder="Drop your take..."
-              className="flex-1 px-4 py-2.5 bg-cream rounded-xl text-sm text-charcoal placeholder:text-charcoal/30 outline-none focus:ring-2 focus:ring-brand-300 transition-all"
-              autoFocus
-            />
-            <button className="p-2.5 bg-brand-500 rounded-xl text-white hover:bg-brand-600 transition-colors active:scale-95">
-              <Send size={16} />
-            </button>
-          </motion.div>
-        ) : (
-          <button
-            onClick={() => setShowInput(true)}
-            className="w-full mt-3 py-2.5 rounded-xl border-2 border-dashed border-charcoal/10 text-sm text-charcoal/40 font-medium hover:border-brand-300 hover:text-brand-500 transition-all"
-          >
-            + Add your take
-          </button>
-        )}
-      </div>
+          ) : (
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => setShowInput(true)}
+              sx={{ mt: 1.5, borderStyle: 'dashed', color: 'text.secondary' }}
+            >
+              + Add your take
+            </Button>
+          )}
+        </Box>
+      </Card>
     </motion.div>
   );
 }
 
 export default function HotTakesPage() {
   return (
-    <div className="flex flex-col h-full overflow-y-auto">
-      <div className="px-5 pt-6 pb-4">
-        <h1 className="text-2xl font-bold text-charcoal">Hot Takes</h1>
-        <p className="text-sm text-charcoal/50 mt-1">
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
+      <Box sx={{ px: 2.5, pt: 3, pb: 2 }}>
+        <Typography variant="h2">Hot Takes</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
           Finish the sentence. No filter. Anonymous.
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
-      <div className="px-5 pb-6 flex flex-col gap-4">
+      <Box sx={{ px: 2.5, pb: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
         {hotTakePrompts.map((take, i) => (
           <HotTakeCard key={take.id} take={take} index={i} />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

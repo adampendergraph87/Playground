@@ -1,6 +1,14 @@
 import { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { ArrowLeft, RotateCcw } from 'lucide-react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import LinearProgress from '@mui/material/LinearProgress';
+import ArrowBackIosNewRounded from '@mui/icons-material/ArrowBackIosNewRounded';
+import UndoRounded from '@mui/icons-material/UndoRounded';
+import ThumbDownAltRounded from '@mui/icons-material/ThumbDownAltRounded';
+import BookmarkBorderRounded from '@mui/icons-material/BookmarkBorderRounded';
+import ThumbUpAltRounded from '@mui/icons-material/ThumbUpAltRounded';
 import SwipeCard from './SwipeCard';
 import DeckComplete from './DeckComplete';
 import { useApp } from '../context/AppContext';
@@ -35,44 +43,46 @@ export default function SwipeDeck({ stories, deckTitle, onBack }) {
   }
 
   const visibleCards = stories.slice(currentIndex, currentIndex + 3).reverse();
+  const progress = ((currentIndex + 1) / stories.length) * 100;
 
   return (
-    <div className="flex flex-col h-full bg-cream">
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: 'background.default' }}>
       {/* Deck header */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-2 z-10">
-        <button
-          onClick={onBack}
-          className="p-2 rounded-full hover:bg-white/60 transition-colors"
-        >
-          <ArrowLeft size={22} className="text-charcoal" />
-        </button>
-        <div className="text-center">
-          <h2 className="font-bold text-charcoal text-sm">{deckTitle}</h2>
-          <p className="text-xs text-charcoal/50">
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, pt: 2, pb: 1, zIndex: 10 }}>
+        <IconButton onClick={onBack} size="small">
+          <ArrowBackIosNewRounded fontSize="small" />
+        </IconButton>
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{deckTitle}</Typography>
+          <Typography variant="caption">
             {currentIndex + 1} / {stories.length}
-          </p>
-        </div>
-        <button
-          onClick={handleUndo}
-          className="p-2 rounded-full hover:bg-white/60 transition-colors"
-          disabled={currentIndex === 0}
-        >
-          <RotateCcw size={18} className={currentIndex === 0 ? 'text-charcoal/20' : 'text-charcoal/60'} />
-        </button>
-      </div>
+          </Typography>
+        </Box>
+        <IconButton onClick={handleUndo} size="small" disabled={currentIndex === 0}>
+          <UndoRounded fontSize="small" />
+        </IconButton>
+      </Box>
 
       {/* Progress bar */}
-      <div className="px-4 mb-2">
-        <div className="h-1.5 bg-white/60 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full transition-all duration-500"
-            style={{ width: `${((currentIndex + 1) / stories.length) * 100}%` }}
-          />
-        </div>
-      </div>
+      <Box sx={{ px: 2, mb: 1 }}>
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{
+            height: 4,
+            borderRadius: 2,
+            bgcolor: 'rgba(0,0,0,0.04)',
+            '& .MuiLinearProgress-bar': {
+              borderRadius: 2,
+              bgcolor: 'primary.main',
+              transition: 'transform 0.5s ease',
+            },
+          }}
+        />
+      </Box>
 
       {/* Card stack */}
-      <div className="flex-1 relative overflow-hidden">
+      <Box sx={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
         <AnimatePresence>
           {visibleCards.map((story, i) => {
             const isTop = i === visibleCards.length - 1;
@@ -93,29 +103,54 @@ export default function SwipeDeck({ stories, deckTitle, onBack }) {
             );
           })}
         </AnimatePresence>
-      </div>
+      </Box>
 
       {/* Bottom action buttons */}
-      <div className="flex justify-center gap-6 py-4 z-10">
-        <button
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, py: 2, zIndex: 10 }}>
+        <IconButton
           onClick={() => handleSwipe('left', stories[currentIndex])}
-          className="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-red-50 transition-colors active:scale-90 border border-gray-100"
+          sx={{
+            width: 56,
+            height: 56,
+            bgcolor: 'background.paper',
+            boxShadow: 2,
+            border: '1px solid',
+            borderColor: 'divider',
+            '&:hover': { bgcolor: 'error.50', borderColor: 'error.light' },
+          }}
         >
-          <span className="text-2xl">👎</span>
-        </button>
-        <button
-          onClick={() => { handleSave(stories[currentIndex]); }}
-          className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-blue-50 transition-colors active:scale-90 border border-gray-100 self-center"
+          <ThumbDownAltRounded sx={{ color: 'text.secondary' }} />
+        </IconButton>
+        <IconButton
+          onClick={() => handleSave(stories[currentIndex])}
+          sx={{
+            width: 48,
+            height: 48,
+            bgcolor: 'background.paper',
+            boxShadow: 1,
+            border: '1px solid',
+            borderColor: 'divider',
+            alignSelf: 'center',
+            '&:hover': { bgcolor: 'primary.50', borderColor: 'primary.light' },
+          }}
         >
-          <span className="text-lg">🔖</span>
-        </button>
-        <button
+          <BookmarkBorderRounded sx={{ color: 'text.secondary' }} />
+        </IconButton>
+        <IconButton
           onClick={() => handleSwipe('right', stories[currentIndex])}
-          className="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-green-50 transition-colors active:scale-90 border border-gray-100"
+          sx={{
+            width: 56,
+            height: 56,
+            bgcolor: 'background.paper',
+            boxShadow: 2,
+            border: '1px solid',
+            borderColor: 'divider',
+            '&:hover': { bgcolor: 'success.50', borderColor: 'success.light' },
+          }}
         >
-          <span className="text-2xl">😂</span>
-        </button>
-      </div>
-    </div>
+          <ThumbUpAltRounded sx={{ color: 'text.secondary' }} />
+        </IconButton>
+      </Box>
+    </Box>
   );
 }

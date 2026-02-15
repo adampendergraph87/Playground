@@ -1,82 +1,105 @@
 import { motion } from 'framer-motion';
-import { Trophy, ArrowLeft, Share2, Flame } from 'lucide-react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
+import EmojiEventsRounded from '@mui/icons-material/EmojiEventsRounded';
+import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
+import ShareRounded from '@mui/icons-material/ShareRounded';
+import WhatshotRounded from '@mui/icons-material/WhatshotRounded';
 import { useApp } from '../context/AppContext';
 
 export default function DeckComplete({ deckTitle, count, onBack }) {
   const { streak, cardsSwipedToday } = useApp();
 
   return (
-    <div className="flex flex-col items-center justify-center h-full bg-gradient-to-b from-cream to-brand-50 px-6">
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        bgcolor: 'background.default',
+        px: 3,
+      }}
+    >
       <motion.div
         initial={{ scale: 0, rotate: -20 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.1 }}
-        className="mb-6"
+        style={{ marginBottom: 24 }}
       >
-        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-xl">
-          <Trophy size={40} className="text-white" />
-        </div>
+        <Avatar sx={{ width: 96, height: 96, bgcolor: 'primary.main', boxShadow: 3 }}>
+          <EmojiEventsRounded sx={{ fontSize: 40 }} />
+        </Avatar>
       </motion.div>
 
-      <motion.h2
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-2xl font-bold text-charcoal mb-2"
       >
-        Deck Complete!
-      </motion.h2>
+        <Typography variant="h2" sx={{ mb: 1, textAlign: 'center' }}>Deck Complete!</Typography>
+      </motion.div>
 
-      <motion.p
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-charcoal/60 text-center mb-8"
       >
-        You swiped through all {count} stories in {deckTitle}
-      </motion.p>
+        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mb: 4 }}>
+          You swiped through all {count} stories in {deckTitle}
+        </Typography>
+      </motion.div>
 
       {/* Stats */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="flex gap-6 mb-10"
+        style={{ marginBottom: 40 }}
       >
-        <div className="flex flex-col items-center">
-          <div className="flex items-center gap-1 text-brand-500">
-            <Flame size={20} />
-            <span className="text-2xl font-bold">{streak}</span>
-          </div>
-          <p className="text-xs text-charcoal/50 mt-1">Day streak</p>
-        </div>
-        <div className="w-px bg-charcoal/10" />
-        <div className="flex flex-col items-center">
-          <span className="text-2xl font-bold text-brand-500">{cardsSwipedToday}</span>
-          <p className="text-xs text-charcoal/50 mt-1">Today</p>
-        </div>
+        <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: 'primary.main' }}>
+              <WhatshotRounded fontSize="small" />
+              <Typography variant="h3">{streak}</Typography>
+            </Box>
+            <Typography variant="caption">Day streak</Typography>
+          </Box>
+          <Divider orientation="vertical" flexItem />
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant="h3" color="primary.main">{cardsSwipedToday}</Typography>
+            <Typography variant="caption">Today</Typography>
+          </Box>
+        </Box>
       </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="flex gap-3"
       >
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 px-6 py-3 rounded-full bg-charcoal text-white font-semibold text-sm hover:bg-charcoal-light transition-colors active:scale-95"
-        >
-          <ArrowLeft size={16} />
-          More Decks
-        </button>
-        <button
-          className="flex items-center gap-2 px-6 py-3 rounded-full bg-white text-charcoal font-semibold text-sm border border-charcoal/10 hover:bg-brand-50 transition-colors active:scale-95"
-        >
-          <Share2 size={16} />
-          Share
-        </button>
+        <Box sx={{ display: 'flex', gap: 1.5 }}>
+          <Button
+            variant="contained"
+            startIcon={<ArrowBackRounded />}
+            onClick={onBack}
+            sx={{ borderRadius: '999px' }}
+          >
+            More Decks
+          </Button>
+          <Button
+            variant="outlined"
+            startIcon={<ShareRounded />}
+            sx={{ borderRadius: '999px' }}
+          >
+            Share
+          </Button>
+        </Box>
       </motion.div>
-    </div>
+    </Box>
   );
 }

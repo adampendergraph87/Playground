@@ -5,7 +5,7 @@ export const dailyDecks = [
     title: "Parenting Fails",
     emoji: "👶",
     subtitle: "Today's theme",
-    color: 'from-brand-400 to-coral',
+    color: '#007AFF',
     cardCount: 8,
   },
   {
@@ -13,7 +13,7 @@ export const dailyDecks = [
     title: "Adulting Is Hard",
     emoji: "🏠",
     subtitle: "Daily deck",
-    color: 'from-lavender to-sky',
+    color: '#5856D6',
     cardCount: 6,
   },
   {
@@ -21,7 +21,7 @@ export const dailyDecks = [
     title: "Relationship Truths",
     emoji: "💕",
     subtitle: "Couples special",
-    color: 'from-coral to-brand-300',
+    color: '#FF3B30',
     cardCount: 7,
   },
   {
@@ -29,7 +29,7 @@ export const dailyDecks = [
     title: "Office Chaos",
     emoji: "💼",
     subtitle: "Work edition",
-    color: 'from-sage to-sky',
+    color: '#34C759',
     cardCount: 5,
   },
 ];

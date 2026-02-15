@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import { useApp } from './context/AppContext';
 import BottomNav from './components/BottomNav';
 import CelebrationOverlay from './components/CelebrationOverlay';
@@ -6,7 +7,6 @@ import HotTakesPage from './pages/HotTakesPage';
 import ConfessPage from './pages/ConfessPage';
 import CouplesPage from './pages/CouplesPage';
 import ProfilePage from './pages/ProfilePage';
-import './App.css';
 
 function PageRouter() {
   const { currentPage } = useApp();
@@ -29,12 +29,24 @@ function PageRouter() {
 
 export default function App() {
   return (
-    <div className="h-full w-full max-w-md mx-auto flex flex-col bg-cream shadow-2xl relative">
-      <div className="flex-1 overflow-hidden">
+    <Box
+      sx={{
+        height: '100%',
+        width: '100%',
+        maxWidth: 448,
+        mx: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        bgcolor: 'background.default',
+        boxShadow: 4,
+        position: 'relative',
+      }}
+    >
+      <Box sx={{ flex: 1, overflow: 'hidden' }}>
         <PageRouter />
-      </div>
+      </Box>
       <BottomNav />
       <CelebrationOverlay />
-    </div>
+    </Box>
   );
 }

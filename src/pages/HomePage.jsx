@@ -1,32 +1,55 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Flame, ChevronRight, Sparkles } from 'lucide-react';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import Avatar from '@mui/material/Avatar';
+import LinearProgress from '@mui/material/LinearProgress';
+import WhatshotRounded from '@mui/icons-material/WhatshotRounded';
+import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded';
+import AutoAwesomeRounded from '@mui/icons-material/AutoAwesomeRounded';
 import { useApp } from '../context/AppContext';
 import { dailyDecks, stories } from '../data/stories';
 import SwipeDeck from '../components/SwipeDeck';
 
 function DeckCard({ deck, onClick, index }) {
   return (
-    <motion.button
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      onClick={onClick}
-      className="w-full bg-white rounded-2xl p-4 shadow-sm border border-charcoal/5 hover:shadow-md transition-all active:scale-[0.98] text-left"
     >
-      <div className="flex items-center gap-4">
-        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${deck.color} flex items-center justify-center text-2xl shadow-sm`}>
-          {deck.emoji}
-        </div>
-        <div className="flex-1">
-          <h3 className="font-bold text-charcoal text-base">{deck.title}</h3>
-          <p className="text-xs text-charcoal/50 mt-0.5">
-            {deck.cardCount} stories · {deck.subtitle}
-          </p>
-        </div>
-        <ChevronRight size={18} className="text-charcoal/30" />
-      </div>
-    </motion.button>
+      <Card>
+        <CardActionArea onClick={onClick} sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Avatar
+              variant="rounded"
+              sx={{
+                width: 48,
+                height: 48,
+                bgcolor: 'primary.light',
+                color: 'primary.dark',
+                fontSize: '1.5rem',
+                borderRadius: 3,
+              }}
+            >
+              {deck.emoji}
+            </Avatar>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                {deck.title}
+              </Typography>
+              <Typography variant="caption">
+                {deck.cardCount} stories · {deck.subtitle}
+              </Typography>
+            </Box>
+            <ChevronRightRounded sx={{ color: 'text.disabled' }} />
+          </Box>
+        </CardActionArea>
+      </Card>
+    </motion.div>
   );
 }
 
@@ -45,94 +68,144 @@ export default function HomePage() {
     );
   }
 
+  const progressPct = Math.min(100, (cardsSwipedToday / 20) * 100);
+
   return (
-    <div className="flex flex-col h-full overflow-y-auto">
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
       {/* Header */}
-      <div className="px-5 pt-6 pb-4">
-        <div className="flex items-center justify-between mb-1">
-          <div>
-            <h1 className="text-2xl font-bold text-charcoal">SwipeLife</h1>
-            <p className="text-sm text-charcoal/50 mt-0.5">What's making everyone laugh today</p>
-          </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-50 rounded-full border border-brand-200">
-            <Flame size={16} className="text-brand-500" />
-            <span className="text-sm font-bold text-brand-600">{streak}</span>
-          </div>
-        </div>
-      </div>
+      <Box sx={{ px: 2.5, pt: 3, pb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+          <Box>
+            <Typography variant="h2">SwipeLife</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              What's making everyone laugh today
+            </Typography>
+          </Box>
+          <Chip
+            icon={<WhatshotRounded sx={{ fontSize: 16 }} />}
+            label={streak}
+            size="small"
+            color="primary"
+            variant="outlined"
+          />
+        </Box>
+      </Box>
 
       {/* Daily stats banner */}
-      <div className="px-5 mb-5">
+      <Box sx={{ px: 2.5, mb: 2.5 }}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-gradient-to-r from-charcoal to-charcoal-light rounded-2xl p-4 text-white shadow-lg"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles size={16} className="text-brand-300" />
-            <span className="text-xs font-semibold text-brand-300 uppercase tracking-wider">
-              Today's Progress
-            </span>
-          </div>
-          <div className="flex items-end gap-4">
-            <div>
-              <p className="text-3xl font-bold">{cardsSwipedToday}</p>
-              <p className="text-xs text-white/50 mt-0.5">stories swiped</p>
-            </div>
-            <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden mb-2">
-              <motion.div
-                className="h-full bg-gradient-to-r from-brand-400 to-brand-500 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(100, (cardsSwipedToday / 20) * 100)}%` }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-              />
-            </div>
-            <p className="text-xs text-white/40 mb-2">/ 20</p>
-          </div>
+          <Card sx={{ bgcolor: 'grey.900', color: 'white', border: 'none' }}>
+            <Box sx={{ p: 2.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                <AutoAwesomeRounded sx={{ fontSize: 16, color: 'primary.light' }} />
+                <Typography variant="overline" sx={{ color: 'primary.light' }}>
+                  Today's Progress
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 2 }}>
+                <Box>
+                  <Typography sx={{ fontSize: '2rem', fontWeight: 700, lineHeight: 1 }}>
+                    {cardsSwipedToday}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                    stories swiped
+                  </Typography>
+                </Box>
+                <Box sx={{ flex: 1, mb: 1 }}>
+                  <LinearProgress
+                    variant="determinate"
+                    value={progressPct}
+                    sx={{
+                      height: 6,
+                      borderRadius: 3,
+                      bgcolor: 'rgba(255,255,255,0.1)',
+                      '& .MuiLinearProgress-bar': {
+                        bgcolor: 'primary.light',
+                        borderRadius: 3,
+                      },
+                    }}
+                  />
+                </Box>
+                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.4)', mb: 1 }}>
+                  / 20
+                </Typography>
+              </Box>
+            </Box>
+          </Card>
         </motion.div>
-      </div>
+      </Box>
 
       {/* Daily Decks */}
-      <div className="px-5 mb-4">
-        <h2 className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider mb-3">
-          Daily Decks
-        </h2>
-        <div className="flex flex-col gap-3">
+      <Box sx={{ px: 2.5, mb: 2 }}>
+        <Typography variant="h6" sx={{ mb: 1.5 }}>Daily Decks</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           {dailyDecks.map((deck, i) => (
             <DeckCard key={deck.id} deck={deck} index={i} onClick={() => setActiveDeck(deck)} />
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
 
       {/* Trending section */}
-      <div className="px-5 pb-6">
-        <h2 className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider mb-3">
-          Trending Stories
-        </h2>
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-5 px-5 snap-x">
+      <Box sx={{ px: 2.5, pb: 3 }}>
+        <Typography variant="h6" sx={{ mb: 1.5 }}>Trending Stories</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 1.5,
+            overflowX: 'auto',
+            pb: 1,
+            mx: -2.5,
+            px: 2.5,
+            scrollSnapType: 'x mandatory',
+          }}
+        >
           {stories.slice(0, 4).map((story, i) => (
             <motion.div
               key={story.id}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="min-w-[260px] snap-start bg-white rounded-2xl p-4 shadow-sm border border-charcoal/5"
+              style={{ minWidth: 260, flexShrink: 0, scrollSnapAlign: 'start' }}
             >
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-bold">
-                  {story.author[0]}
-                </div>
-                <span className="text-xs font-medium text-charcoal/60">{story.author}</span>
-              </div>
-              <p className="text-sm text-charcoal leading-relaxed line-clamp-3">{story.content}</p>
-              <div className="flex gap-2 mt-3">
-                <span className="text-xs text-charcoal/40">😂 {(story.reactions.laugh / 1000).toFixed(1)}k</span>
-                <span className="text-xs text-charcoal/40">💯 {(story.reactions.same / 1000).toFixed(1)}k</span>
-              </div>
+              <Card sx={{ height: '100%' }}>
+                <Box sx={{ p: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                    <Avatar sx={{ width: 28, height: 28, bgcolor: 'primary.main', fontSize: 12, fontWeight: 700 }}>
+                      {story.author[0]}
+                    </Avatar>
+                    <Typography variant="caption" sx={{ fontWeight: 500 }}>
+                      {story.author}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      color: 'text.primary',
+                    }}
+                  >
+                    {story.content}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1.5, mt: 1.5 }}>
+                    <Typography variant="caption">
+                      {(story.reactions.laugh / 1000).toFixed(1)}k laughs
+                    </Typography>
+                    <Typography variant="caption">
+                      {(story.reactions.same / 1000).toFixed(1)}k same
+                    </Typography>
+                  </Box>
+                </Box>
+              </Card>
             </motion.div>
           ))}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }

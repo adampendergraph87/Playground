@@ -1,6 +1,20 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic, MicOff, Send, Play, Pause, Trash2, Keyboard } from 'lucide-react';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import TextField from '@mui/material/TextField';
+import Fab from '@mui/material/Fab';
+import MicRounded from '@mui/icons-material/MicRounded';
+import MicOffRounded from '@mui/icons-material/MicOffRounded';
+import SendRounded from '@mui/icons-material/SendRounded';
+import PlayArrowRounded from '@mui/icons-material/PlayArrowRounded';
+import PauseRounded from '@mui/icons-material/PauseRounded';
+import DeleteRounded from '@mui/icons-material/DeleteRounded';
+import KeyboardRounded from '@mui/icons-material/KeyboardRounded';
 
 const recentConfessions = [
   { id: 1, duration: '0:34', text: 'I told my kid vegetables are "dinosaur food" and now he only eats broccoli...', plays: 1234, timeAgo: '2h' },
@@ -10,31 +24,24 @@ const recentConfessions = [
 
 function WaveformVisualizer({ active }) {
   return (
-    <div className="flex items-center justify-center gap-[3px] h-16">
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px', height: 64 }}>
       {Array.from({ length: 32 }).map((_, i) => (
         <motion.div
           key={i}
-          className="w-1 rounded-full bg-brand-400"
+          style={{ width: 3, borderRadius: 2, backgroundColor: '#4DA3FF' }}
           animate={
             active
-              ? {
-                  height: [4, Math.random() * 40 + 8, 4],
-                }
+              ? { height: [4, Math.random() * 40 + 8, 4] }
               : { height: 4 }
           }
           transition={
             active
-              ? {
-                  duration: 0.4 + Math.random() * 0.4,
-                  repeat: Infinity,
-                  repeatType: 'reverse',
-                  delay: i * 0.02,
-                }
+              ? { duration: 0.4 + Math.random() * 0.4, repeat: Infinity, repeatType: 'reverse', delay: i * 0.02 }
               : { duration: 0.3 }
           }
         />
       ))}
-    </div>
+    </Box>
   );
 }
 
@@ -46,46 +53,48 @@ function ConfessionCard({ confession, index }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white rounded-2xl p-4 shadow-sm border border-charcoal/5"
     >
-      <div className="flex items-start gap-3">
-        <button
-          onClick={() => setPlaying(!playing)}
-          className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors shadow-sm ${
-            playing
-              ? 'bg-brand-500 text-white'
-              : 'bg-brand-100 text-brand-600 hover:bg-brand-200'
-          }`}
-        >
-          {playing ? <Pause size={16} /> : <Play size={16} className="ml-0.5" />}
-        </button>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm text-charcoal leading-relaxed italic">"{confession.text}"</p>
-          <div className="flex items-center gap-3 mt-2">
-            <span className="text-xs text-charcoal/40">{confession.duration}</span>
-            <span className="text-xs text-charcoal/40">{confession.plays.toLocaleString()} plays</span>
-            <span className="text-xs text-charcoal/40">{confession.timeAgo} ago</span>
-          </div>
-          {playing && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mt-2"
-            >
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 24 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-1 bg-brand-300 rounded-full"
-                    animate={{ height: [3, Math.random() * 14 + 3, 3] }}
-                    transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.03 }}
-                  />
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </div>
+      <Card>
+        <Box sx={{ p: 2, display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+          <IconButton
+            onClick={() => setPlaying(!playing)}
+            sx={{
+              width: 40,
+              height: 40,
+              bgcolor: playing ? 'primary.main' : 'primary.light',
+              color: playing ? 'white' : 'primary.dark',
+              '&:hover': { bgcolor: playing ? 'primary.dark' : 'primary.main', color: 'white' },
+              flexShrink: 0,
+            }}
+          >
+            {playing ? <PauseRounded fontSize="small" /> : <PlayArrowRounded fontSize="small" />}
+          </IconButton>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography variant="body2" sx={{ fontStyle: 'italic', lineHeight: 1.5 }}>
+              &ldquo;{confession.text}&rdquo;
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+              <Typography variant="caption">{confession.duration}</Typography>
+              <Typography variant="caption">{confession.plays.toLocaleString()} plays</Typography>
+              <Typography variant="caption">{confession.timeAgo} ago</Typography>
+            </Box>
+            {playing && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px', mt: 1 }}>
+                  {Array.from({ length: 24 }).map((_, i) => (
+                    <motion.div
+                      key={i}
+                      style={{ width: 3, borderRadius: 2, backgroundColor: '#4DA3FF' }}
+                      animate={{ height: [3, Math.random() * 14 + 3, 3] }}
+                      transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.03 }}
+                    />
+                  ))}
+                </Box>
+              </motion.div>
+            )}
+          </Box>
+        </Box>
+      </Card>
     </motion.div>
   );
 }
@@ -93,7 +102,7 @@ function ConfessionCard({ confession, index }) {
 export default function ConfessPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [hasRecording, setHasRecording] = useState(false);
-  const [mode, setMode] = useState('voice'); // voice or text
+  const [mode, setMode] = useState('voice');
   const [textInput, setTextInput] = useState('');
 
   const handleRecord = () => {
@@ -107,119 +116,145 @@ export default function ConfessPage() {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto">
-      <div className="px-5 pt-6 pb-4">
-        <h1 className="text-2xl font-bold text-charcoal">Audio Confessionals</h1>
-        <p className="text-sm text-charcoal/50 mt-1">
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
+      <Box sx={{ px: 2.5, pt: 3, pb: 2 }}>
+        <Typography variant="h2">Audio Confessionals</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
           Share your story. Completely anonymous.
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
       {/* Recording area */}
-      <div className="px-5 mb-6">
-        <div className="bg-gradient-to-b from-charcoal to-charcoal-light rounded-2xl p-6 text-center shadow-lg">
-          {/* Mode toggle */}
-          <div className="flex justify-center gap-2 mb-5">
-            <button
-              onClick={() => setMode('voice')}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
-                mode === 'voice'
-                  ? 'bg-brand-500 text-white'
-                  : 'bg-white/10 text-white/60 hover:bg-white/20'
-              }`}
-            >
-              <Mic size={14} />
-              Voice
-            </button>
-            <button
-              onClick={() => setMode('text')}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all ${
-                mode === 'text'
-                  ? 'bg-brand-500 text-white'
-                  : 'bg-white/10 text-white/60 hover:bg-white/20'
-              }`}
-            >
-              <Keyboard size={14} />
-              Text
-            </button>
-          </div>
+      <Box sx={{ px: 2.5, mb: 3 }}>
+        <Card sx={{ bgcolor: 'grey.900', color: 'white', border: 'none' }}>
+          <Box sx={{ p: 3, textAlign: 'center' }}>
+            {/* Mode toggle */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mb: 3 }}>
+              <Button
+                startIcon={<MicRounded />}
+                onClick={() => setMode('voice')}
+                variant={mode === 'voice' ? 'contained' : 'text'}
+                size="small"
+                sx={{
+                  borderRadius: '999px',
+                  ...(mode !== 'voice' && { color: 'rgba(255,255,255,0.6)' }),
+                }}
+              >
+                Voice
+              </Button>
+              <Button
+                startIcon={<KeyboardRounded />}
+                onClick={() => setMode('text')}
+                variant={mode === 'text' ? 'contained' : 'text'}
+                size="small"
+                sx={{
+                  borderRadius: '999px',
+                  ...(mode !== 'text' && { color: 'rgba(255,255,255,0.6)' }),
+                }}
+              >
+                Text
+              </Button>
+            </Box>
 
-          {mode === 'voice' ? (
-            <>
-              <WaveformVisualizer active={isRecording} />
+            {mode === 'voice' ? (
+              <>
+                <WaveformVisualizer active={isRecording} />
 
-              <p className="text-white/60 text-sm mb-5 mt-3">
-                {isRecording
-                  ? 'Recording... tap to stop'
-                  : hasRecording
-                  ? 'Recording saved! Send or redo?'
-                  : 'Tap to start recording your confession'}
-              </p>
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mb: 2.5, mt: 1.5 }}>
+                  {isRecording
+                    ? 'Recording... tap to stop'
+                    : hasRecording
+                    ? 'Recording saved! Send or redo?'
+                    : 'Tap to start recording your confession'}
+                </Typography>
 
-              <div className="flex justify-center gap-4">
-                {hasRecording && (
-                  <button
-                    onClick={() => setHasRecording(false)}
-                    className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:bg-white/20 transition-colors"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                )}
-
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  onClick={handleRecord}
-                  className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-colors ${
-                    isRecording
-                      ? 'bg-red-500 animate-pulse'
-                      : 'bg-brand-500 hover:bg-brand-600'
-                  }`}
-                >
-                  {isRecording ? (
-                    <MicOff size={24} className="text-white" />
-                  ) : (
-                    <Mic size={24} className="text-white" />
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                  {hasRecording && (
+                    <IconButton
+                      onClick={() => setHasRecording(false)}
+                      sx={{ bgcolor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } }}
+                    >
+                      <DeleteRounded />
+                    </IconButton>
                   )}
-                </motion.button>
 
-                {hasRecording && (
-                  <button className="w-12 h-12 rounded-full bg-brand-500 flex items-center justify-center text-white hover:bg-brand-600 transition-colors">
-                    <Send size={18} />
-                  </button>
-                )}
-              </div>
-            </>
-          ) : (
-            <div className="text-left">
-              <textarea
-                value={textInput}
-                onChange={(e) => setTextInput(e.target.value)}
-                placeholder="Share your confession anonymously..."
-                className="w-full h-28 bg-white/10 rounded-xl p-4 text-white placeholder:text-white/30 text-sm outline-none resize-none focus:ring-2 focus:ring-brand-400 transition-all"
-              />
-              <div className="flex justify-between items-center mt-3">
-                <span className="text-xs text-white/30">{textInput.length} / 280</span>
-                <button className="px-5 py-2 bg-brand-500 rounded-full text-white text-sm font-semibold hover:bg-brand-600 transition-colors active:scale-95 flex items-center gap-2">
-                  <Send size={14} />
-                  Submit
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+                  <motion.div whileTap={{ scale: 0.9 }}>
+                    <Fab
+                      onClick={handleRecord}
+                      color={isRecording ? 'error' : 'primary'}
+                      sx={{
+                        width: 64,
+                        height: 64,
+                        ...(isRecording && {
+                          animation: 'pulse 1.5s infinite',
+                          '@keyframes pulse': {
+                            '0%, 100%': { boxShadow: '0 0 0 0 rgba(255,59,48,0.4)' },
+                            '50%': { boxShadow: '0 0 0 12px rgba(255,59,48,0)' },
+                          },
+                        }),
+                      }}
+                    >
+                      {isRecording ? <MicOffRounded sx={{ fontSize: 28 }} /> : <MicRounded sx={{ fontSize: 28 }} />}
+                    </Fab>
+                  </motion.div>
+
+                  {hasRecording && (
+                    <IconButton
+                      sx={{ bgcolor: 'primary.main', color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}
+                    >
+                      <SendRounded />
+                    </IconButton>
+                  )}
+                </Box>
+              </>
+            ) : (
+              <Box sx={{ textAlign: 'left' }}>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                  placeholder="Share your confession anonymously..."
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      bgcolor: 'rgba(255,255,255,0.1)',
+                      color: 'white',
+                      '& fieldset': { borderColor: 'rgba(255,255,255,0.15)' },
+                      '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
+                      '&.Mui-focused fieldset': { borderColor: 'primary.light' },
+                    },
+                    '& .MuiInputBase-input::placeholder': { color: 'rgba(255,255,255,0.3)' },
+                  }}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1.5 }}>
+                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.3)' }}>
+                    {textInput.length} / 280
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    startIcon={<SendRounded />}
+                    size="small"
+                    sx={{ borderRadius: '999px' }}
+                  >
+                    Submit
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        </Card>
+      </Box>
 
       {/* Recent confessions */}
-      <div className="px-5 pb-6">
-        <h2 className="text-sm font-semibold text-charcoal/60 uppercase tracking-wider mb-3">
-          Recent Confessions
-        </h2>
-        <div className="flex flex-col gap-3">
+      <Box sx={{ px: 2.5, pb: 3 }}>
+        <Typography variant="h6" sx={{ mb: 1.5 }}>Recent Confessions</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
           {recentConfessions.map((c, i) => (
             <ConfessionCard key={c.id} confession={c} index={i} />
           ))}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 }
